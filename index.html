@@ -104,14 +104,14 @@
                 let editFeature, highlight, featureForm, editArea, attributeEditing, updateInstructionDiv;
 
                 const featureLayer = new FeatureLayer({
-                    url: "https://dev.cityofelcampo.org:6443/arcgis/rest/services/Water/WaterMeterEdit/FeatureServer",
+                    url: "https://services2.arcgis.com/HNMIfnmUIg26wHJa/ArcGIS/rest/services/MeterTest/FeatureServer/0",
                     outFields: ["*"],
                     popupEnabled: false,
-                    id: "incidentsLayer"
+                    id: "meterLayer"
                 });
 
                 const map = new Map({
-                    basemap: "dark-gray",
+                    basemap: "streets",
                     layers: [featureLayer]
                 });
 
@@ -119,7 +119,7 @@
                     container: "viewDiv",
                     map: map,
                     center: [-96.27,29.2],
-                    zoom: 15
+                    zoom: 18
                 });
 
                 setupEditing();
@@ -145,23 +145,23 @@
                 }
 
                 // *****************************************************
-                // Check if a user clicked on an incident feature.
+                // Check if a user clicked on an meter feature.
                 // *****************************************************
                 view.on("click", function(event) {
                     // clear previous feature selection
                     unselectFeature();
 
                     view.hitTest(event).then(function(response) {
-                        // If a user clicks on an incident feature, select the feature.
-                        if (response.results[0].graphic && response.results[0].graphic.layer.id == "incidentsLayer") {
+                        // If a user clicks on an meter feature, select the feature.
+                        if (response.results[0].graphic && response.results[0].graphic.layer.id == "meterLayer") {
                             selectFeature(response.results[0].graphic.attributes[featureLayer.objectIdField]);
                         }
                     });
                 });
 
                 // *****************************************************
-                // Highlights the clicked incident feature and display
-                // the feature form with the incident's attributes.
+                // Highlights the clicked meter feature and display
+                // the feature form with the meter's attributes.
                 // *****************************************************
                 function selectFeature(objectId) {
                     // query feature from the server
@@ -210,7 +210,7 @@
                     attributeEditing = document.getElementById("featureUpdateDiv");
 
                     // Create a new feature form and set its layer to
-                    // 'incidents' featureLayer. Feature form displays
+                    // 'meter' featureLayer. Feature form displays
                     // attributes of the fields specified in fieldConfig.
                     featureForm = new FeatureForm({
                         container: "formDiv",
@@ -223,9 +223,27 @@
                                 }
                             },
                             {
+                                name: "location_domain",
+                                options: {
+                                    label: "Location"
+                                }
+                            },
+                            {
                                 name: "meter_count",
                                 options: {
                                     label: "Meter Count"
+                                }
+                            },
+                            {
+                                name: "miu",
+                                options: {
+                                    label: "MIU"
+                                }
+                            },
+                            {
+                                name: "meter_number",
+                                options: {
+                                    label: "Meter Number"
                                 }
                             }
                         ]
@@ -284,7 +302,7 @@
                                 point.z = undefined;
                                 point.hasZ = false;
 
-                                // Create a new feature with incident type of "other".
+                                // Create a new feature with meter type of "other".
                                 editFeature = new Graphic({
                                     geometry: point,
                                     attributes: {
@@ -304,7 +322,7 @@
                         });
 
                         // Change the view's mouse cursor once user selects
-                        // a new incident type to create.
+                        // a new meter type to create.
                         document.getElementById("viewDiv").style.cursor = "crosshair";
                         editArea.style.cursor = "auto";
                     }
@@ -328,11 +346,11 @@
 <body>
 <div id="editArea" class="editArea-container">
     <div id="addFeatureDiv">
-        <h3 class="list-heading">Report Incidents</h3>
+        <h3 class="list-heading">Meter Editor</h3>
         <ul style="font-size: 13px; padding-left: 1.5em;">
             <li>Click Add meter button</li>
-            <li>Click on the map to create the incident</li>
-            <li>Change the incident type</li>
+            <li>Click on the map to create the meter</li>
+            <li>Change the meter type</li>
         </ul>
         <input type="button" class="edit-button" value="Add Meter" id="btnAddFeature">
     </div>
@@ -341,20 +359,20 @@
         <p class="or-wrap">
             <span class="or-text">Or</span>
         </p>
-        <p>Select an incident to edit or delete.</p>
+        <p>Select a meter to edit or delete.</p>
     </div>
 
     <div id="featureUpdateDiv" style="display:none; margin-top: 1em;">
-        <h3 class="list-heading">Enter the incident information</h3>
+        <h3 class="list-heading">Enter the meter information</h3>
 
         <div id="attributeArea">
             <div id="formDiv"></div>
-            <input type="button" class="edit-button" value="Update incident info"
+            <input type="button" class="edit-button" value="Update meter"
                    id="btnUpdate">
         </div>
 
         <div id="deleteArea">
-            <input type="button" class="edit-button" value="Delete incident" id="btnDelete">
+            <input type="button" class="edit-button" value="Delete meter" id="btnDelete">
         </div>
     </div>
 </div>
