@@ -95,10 +95,11 @@
                 "esri/layers/FeatureLayer",
                 "esri/Graphic",
                 "esri/widgets/Expand",
-                "esri/widgets/FeatureForm"
+                "esri/widgets/FeatureForm",
+                "esri/widgets/BasemapToggle"
             ],
             function(
-                Map, MapView, FeatureLayer, Graphic, Expand, FeatureForm
+                Map, MapView, FeatureLayer, Graphic, Expand, FeatureForm, BasemapToggle
             ) {
 
                 let editFeature, highlight, featureForm, editArea, attributeEditing, updateInstructionDiv;
@@ -123,6 +124,17 @@
                 });
 
                 setupEditing();
+
+
+                // 1 - Create the widget
+                var toggle = new BasemapToggle({
+                    // 2 - Set properties
+                    view: view, // view that provides access to the map's 'topo' basemap
+                    nextBasemap: "hybrid" // allows for toggling to the 'hybrid' basemap
+                });
+
+                // Add widget to the top right corner of the view
+                view.ui.add(toggle, "bottom-left");
 
                 // ***********************************************************
                 // Call FeatureLayer.applyEdits() with specified params.
@@ -340,6 +352,8 @@
                     }
                 }
             });
+
+
     </script>
 </head>
 
